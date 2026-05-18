@@ -1,0 +1,61 @@
+# Handoff: MirrorCam — macOS Webcam Mirror App
+
+## Status
+
+Pipeline: **Feature** route, paused at **Phase 5 (TDD)** — blocked on Xcode upgrade.
+
+Phases 1-4 complete. Phase 5 not started (no code written yet).
+
+## Prerequisite
+
+**Xcode 15+ must be installed** before resuming. Current system has Xcode 13.4.1 (Swift 5.6), which cannot build macOS 14 targets or use @Observable, SMAppService, etc.
+
+## Artifacts
+
+| Artifact | Path |
+|----------|------|
+| PRD | /Users/sijin/Documents/MirrorCam/README.md |
+| Issues (10) | /Users/sijin/Documents/MirrorCam/issues/01-10 .txt files |
+
+## Key Decisions (Phase 1 GRILL)
+
+- App name: MirrorCam
+- Framework: Swift (SwiftUI + AVFoundation)
+- App type: Menu bar only (LSUIElement)
+- Window shapes: Circle + rounded rectangle (toggle)
+- Default size: 200x200px, drag resize 100-600px
+- Global hotkey: Option+Cmd+G (customizable)
+- Always-on-top: Yes (floating NSPanel)
+- Mirror flip: Default on, toggle off
+- Distribution: Mac App Store, free
+- Min OS: macOS 14 (Sonoma)
+- Settings: All persisted via UserDefaults
+- MVP extras: Drag move, launch at login, brightness/zoom
+- v2 deferred: Camera selection, filters
+
+## Issue Dependency Graph
+
+```
+Issue 1 (tracer bullet: scaffold + camera + floating panel)
+  -> Issue 2 (menu bar) -> Issue 9 (launch at login)
+  -> Issue 3 (global hotkey)
+  -> Issue 4 (window shapes) -|
+  -> Issue 5 (mirror flip)   -|-> Issue 8 (settings persistence)
+  -> Issue 6 (brightness/zoom)-|
+  -> Issue 7 (drag/resize)   -|
+  -> All -> Issue 10 (polish + App Store prep)
+```
+
+## Resume Instructions
+
+1. Verify Xcode 15+ is installed: xcodebuild -version
+2. Run /pipeline and say: "Resume MirrorCam TDD from handoff"
+3. Start Phase 5 with Issue 1 (tracer bullet)
+4. Use /tdd skill for red-green-refactor loop
+5. CameraManager interface already designed (see PRD Module Design section)
+6. Test plan for Issue 1: authorization flow, session lifecycle, frame publishing
+
+## Suggested Skills
+
+- /tdd for each issue implementation
+- /code-review after all issues done (Phase 6)

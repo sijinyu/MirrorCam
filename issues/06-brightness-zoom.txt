@@ -1,0 +1,19 @@
+# Issue 6: Brightness and zoom adjustment
+
+## What to build
+
+Add brightness and zoom controls to the mirror. Brightness adjusts the image lightness via CIFilter (CIColorControls). Zoom crops into the center of the image. Controls should be accessible from the menu bar dropdown as slider-style items or via a small popover. Brightness range: -0.5 to +0.5 (default 0). Zoom range: 1.0x to 3.0x (default 1.0x). Both adjustments run through the ImageProcessor pipeline.
+
+## Acceptance criteria
+
+- [ ] Brightness adjustable from menu bar (slider or stepper)
+- [ ] Zoom adjustable from menu bar (slider or stepper)
+- [ ] Brightness range: -0.5 to +0.5, default 0
+- [ ] Zoom range: 1.0x to 3.0x, default 1.0x
+- [ ] Changes apply to the live preview in real-time
+- [ ] ImageProcessor handles brightness and zoom as pure transformations
+- [ ] Unit tests for ImageProcessor brightness and zoom
+
+## Blocked by
+
+- Issue 1

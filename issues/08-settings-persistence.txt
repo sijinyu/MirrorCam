@@ -1,0 +1,18 @@
+# Issue 8: Settings persistence (all preferences)
+
+## What to build
+
+Create a SettingsStore module (@Observable, backed by UserDefaults) that saves and restores all user preferences: window position (x, y), window size (width, height), window shape (circle/rect), mirror flip state, brightness, zoom, and custom hotkey. All settings auto-persist on change. On app launch, restore the last saved state. If no saved state exists, use sensible defaults (200x200, center of screen, circle, mirrored, brightness 0, zoom 1.0x, ⌥⌘G).
+
+## Acceptance criteria
+
+- [ ] SettingsStore persists all settings to UserDefaults
+- [ ] Settings auto-save on every change (no explicit save action)
+- [ ] On launch, all settings restored from last session
+- [ ] Default values applied when no saved state exists
+- [ ] All modules read from SettingsStore instead of hardcoded values
+- [ ] Unit tests for SettingsStore: defaults, round-trip persistence, boundary values
+
+## Blocked by
+
+- Issue 1, Issue 4, Issue 5, Issue 6, Issue 7

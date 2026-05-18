@@ -1,0 +1,21 @@
+# Issue 10: Polish — animation, battery optimization, App Store prep
+
+## What to build
+
+Final integration and polish pass. Add smooth fade-in/fade-out animation when showing/hiding the mirror (0.2s duration). Verify camera fully stops when mirror is hidden (no background CPU usage). Prepare for App Store submission: app icon (1024x1024), Info.plist metadata (description, category, privacy usage descriptions), build configuration for release, screenshots for App Store listing. Verify all features work together end-to-end. Target: < 5% CPU when visible, near 0% when hidden.
+
+## Acceptance criteria
+
+- [ ] Show/hide animation is smooth (fade in/out)
+- [ ] CPU usage < 5% when mirror is visible
+- [ ] CPU usage near 0% when mirror is hidden
+- [ ] Camera fully stops when mirror is hidden
+- [ ] App icon designed and included (1024x1024)
+- [ ] Info.plist has all required metadata
+- [ ] Privacy usage descriptions for camera
+- [ ] Build configuration set for Release/App Store
+- [ ] All features work together without conflicts
+
+## Blocked by
+
+- Issues 1-9

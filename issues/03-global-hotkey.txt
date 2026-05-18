@@ -1,0 +1,18 @@
+# Issue 3: Global hotkey (Option+Cmd+G) toggle
+
+## What to build
+
+Register a system-wide global keyboard shortcut (⌥⌘G) that toggles the mirror panel visibility from any app. Use CGEvent tap or NSEvent.addGlobalMonitorForEvents. The hotkey should work even when MirrorCam is not the frontmost app. Store the hotkey configuration so it can be customized later (Issue 8). The HotkeyManager module should be independent and testable.
+
+## Acceptance criteria
+
+- [ ] ⌥⌘G toggles mirror panel from any application
+- [ ] Hotkey works when MirrorCam is in the background
+- [ ] HotkeyManager supports registering/deregistering hotkeys
+- [ ] HotkeyManager accepts custom key combinations (for future customization)
+- [ ] Accessibility permission requested if needed, with clear guidance
+- [ ] Unit tests for HotkeyManager registration and callback
+
+## Blocked by
+
+- Issue 1

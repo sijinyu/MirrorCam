@@ -1,0 +1,24 @@
+# Issue 1: Project scaffold + camera preview in floating panel
+
+## What to build
+
+Create the Xcode project for MirrorCam as a menu-bar-only macOS app (LSUIElement = true) targeting macOS 14+. Set up App Sandbox with camera entitlement. Implement the core camera-to-screen pipeline: AVCaptureSession captures frames from the default camera, renders them via CIImage into an NSPanel with floating window level. The panel should display the live camera feed in a 200x200 window. Handle camera authorization gracefully — prompt the user on first launch, show a placeholder message if denied.
+
+This is the tracer bullet slice that proves the entire pipeline works end-to-end.
+
+## Acceptance criteria
+
+- [ ] Xcode project builds and runs on macOS 14+
+- [ ] App is configured as menu-bar-only (no Dock icon)
+- [ ] App Sandbox enabled with camera entitlement
+- [ ] Camera authorization requested on first launch with clear usage description
+- [ ] If camera denied, a placeholder message is shown in the window
+- [ ] Live camera feed displays in a 200x200 floating NSPanel
+- [ ] Panel stays above other windows (NSWindow.Level.floating)
+- [ ] Camera session stops when window is closed
+- [ ] CameraManager module is protocol-based for testability
+- [ ] Unit tests for CameraManager authorization flow and lifecycle
+
+## Blocked by
+
+None - can start immediately

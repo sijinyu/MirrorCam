@@ -1,0 +1,19 @@
+# Issue 2: Menu bar integration with show/hide toggle
+
+## What to build
+
+Add an NSStatusItem to the menu bar with an SF Symbol icon (e.g., "camera.fill" or a mirror-like symbol). Clicking the icon shows a dropdown NSMenu with at minimum: "Toggle Mirror" (shows/hides the floating panel) and "Quit MirrorCam". The menu bar icon should always be visible while the app is running. When "Toggle Mirror" is clicked, the floating panel from Issue 1 appears or disappears. Camera starts on show, stops on hide.
+
+## Acceptance criteria
+
+- [ ] Menu bar icon visible when app is running
+- [ ] Dropdown menu appears on click with "Toggle Mirror" and "Quit" items
+- [ ] "Toggle Mirror" shows the floating mirror panel when hidden
+- [ ] "Toggle Mirror" hides the floating mirror panel when visible
+- [ ] Camera starts when mirror is shown, stops when hidden
+- [ ] "Quit" terminates the app cleanly
+- [ ] MenuBarController module is separated from app logic
+
+## Blocked by
+
+- Issue 1

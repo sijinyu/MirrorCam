@@ -1,0 +1,19 @@
+# Issue 4: Window shapes — circle + rounded rectangle
+
+## What to build
+
+Add two window shape modes to the floating mirror panel: circle and rounded rectangle. Use CALayer masking to clip the camera preview to the selected shape. The window itself should have no title bar and a transparent background so only the shaped camera preview is visible. Add a "Shape" submenu to the menu bar dropdown with "Circle" and "Rectangle" options. Default shape: circle.
+
+## Acceptance criteria
+
+- [ ] Circle shape clips the camera preview to a perfect circle
+- [ ] Rounded rectangle shape clips with appropriate corner radius
+- [ ] Window has no title bar and transparent background
+- [ ] Shape toggle available in menu bar dropdown
+- [ ] Current shape indicated in the menu (checkmark)
+- [ ] Shape change is immediate with no flicker
+- [ ] Unit tests for MirrorWindow shape masking logic
+
+## Blocked by
+
+- Issue 1

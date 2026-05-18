@@ -1,0 +1,18 @@
+# Issue 9: Launch at login (SMAppService)
+
+## What to build
+
+Add a "Launch at Login" toggle to the menu bar dropdown. Use SMAppService (macOS 13+) to register/unregister the app as a login item. When enabled, the app launches automatically when the user logs in and sits in the menu bar ready to use. The toggle state should be persisted via SettingsStore and reflected in the menu with a checkmark.
+
+## Acceptance criteria
+
+- [ ] "Launch at Login" menu item in dropdown
+- [ ] Toggling registers/unregisters via SMAppService
+- [ ] Current state shown with checkmark in menu
+- [ ] Setting persisted across app restarts
+- [ ] Works correctly with App Sandbox
+- [ ] Graceful handling if SMAppService fails
+
+## Blocked by
+
+- Issue 2

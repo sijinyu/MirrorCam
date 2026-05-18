@@ -1,0 +1,19 @@
+# Issue 7: Drag-to-move + drag-to-resize (100-600px)
+
+## What to build
+
+Make the floating mirror panel draggable by clicking and dragging anywhere on the preview. Add edge-drag resizing: dragging the edge or corner of the panel resizes it proportionally. Minimum size: 100x100px. Maximum size: 600x600px. The window should maintain its aspect ratio (1:1) during resize. Position and size should be emitted as events so they can be persisted later.
+
+## Acceptance criteria
+
+- [ ] Panel is draggable by clicking anywhere on the preview
+- [ ] Panel is resizable by dragging edges/corners
+- [ ] Minimum size enforced: 100x100px
+- [ ] Maximum size enforced: 600x600px
+- [ ] Aspect ratio maintained at 1:1 during resize
+- [ ] Window stays on screen (does not go fully off-screen)
+- [ ] Unit tests for MirrorWindow size constraint logic
+
+## Blocked by
+
+- Issue 1

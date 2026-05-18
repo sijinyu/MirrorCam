@@ -1,0 +1,17 @@
+# Issue 5: Mirror flip (horizontal) with toggle
+
+## What to build
+
+Apply a horizontal flip (mirror) transformation to the camera image by default so the preview behaves like a real mirror. Use CIFilter or CGAffineTransform on the CIImage pipeline. Add a "Flip Mirror" toggle to the menu bar dropdown. When unchecked, the image shows as the camera sees it (non-mirrored). The ImageProcessor module should be a pure, stateless function pipeline.
+
+## Acceptance criteria
+
+- [ ] Camera preview is horizontally flipped by default
+- [ ] "Flip Mirror" menu item toggles between mirrored and non-mirrored
+- [ ] Current flip state indicated in the menu (checkmark)
+- [ ] ImageProcessor is a stateless module — takes CIImage + parameters, returns CIImage
+- [ ] Unit tests for ImageProcessor flip transformation
+
+## Blocked by
+
+- Issue 1
