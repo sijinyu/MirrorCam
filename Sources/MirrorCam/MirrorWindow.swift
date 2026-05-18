@@ -4,10 +4,8 @@ import Combine
 
 public final class MirrorWindow {
     private var panel: NSPanel?
-    private let ciContext = CIContext(options: [.useSoftwareRenderer: false])
-    private var imageView: NSImageView?
+    private var contentView: MirrorContentView?
     private var cancellables = Set<AnyCancellable>()
-    private var trackingArea: NSTrackingArea?
 
     public var onPositionChanged: ((Double, Double) -> Void)?
     public var onSizeChanged: ((Double) -> Void)?
@@ -17,9 +15,10 @@ public final class MirrorWindow {
     public init() {}
 
     public func show(settings: SettingsStore, framePublisher: AnyPublisher<CIImage, Never>) {
-        guard panel == nil else {
-            panel?.orderFront(nil)
+        if let panel = panel {
+            panel.orderFront(nil)
             isVisible = true
+            subscribeTo(framePublisher)
             return
         }
 
@@ -36,30 +35,31 @@ public final class MirrorWindow {
         panel.isOpaque = false
         panel.backgroundColor = .clear
         panel.hasShadow = true
-        panel.isMovableByWindowBackground = true
+        panel.isMovableByWindowBackground = false
         panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+        panel.hidesOnDeactivate = false
 
-        let imageView = NSImageView(frame: NSRect(x: 0, y: 0, width: size, height: size))
-        imageView.imageScaling = .scaleProportionallyUpOrDown
-        imageView.wantsLayer = true
+        let mirrorView = MirrorContentView(frame: NSRect(x: 0, y: 0, width: size, height: size))
+        mirrorView.shape = settings.shape
+        mirrorView.autoresizingMask = [.width, .height]
 
-        panel.contentView = imageView
-        self.imageView = imageView
+        panel.contentView = mirrorView
+        self.contentView = mirrorView
         self.panel = panel
 
-        applyShape(settings.shape, size: size)
-
-        framePublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] ciImage in
-                self?.renderFrame(ciImage)
-            }
-            .store(in: &cancellables)
+        subscribeTo(framePublisher)
 
         NotificationCenter.default.publisher(for: NSWindow.didMoveNotification, object: panel)
             .compactMap { ($0.object as? NSPanel)?.frame }
             .sink { [weak self] frame in
                 self?.onPositionChanged?(frame.origin.x, frame.origin.y)
+            }
+            .store(in: &cancellables)
+
+        NotificationCenter.default.publisher(for: NSWindow.didResizeNotification, object: panel)
+            .compactMap { ($0.object as? NSPanel)?.frame }
+            .sink { [weak self] frame in
+                self?.onSizeChanged?(frame.width)
             }
             .store(in: &cancellables)
 
@@ -77,54 +77,44 @@ public final class MirrorWindow {
         hide()
         panel?.close()
         panel = nil
-        imageView = nil
+        contentView = nil
     }
 
     public func updateShape(_ shape: WindowShape) {
-        guard let panel = panel else { return }
-        let size = panel.frame.width
-        applyShape(shape, size: size)
+        contentView?.shape = shape
     }
 
     public func updateSize(_ newSize: Double) {
         guard let panel = panel else { return }
         let clamped = min(max(newSize, 100), 600)
-        let origin = panel.frame.origin
+        let center = NSPoint(x: panel.frame.midX, y: panel.frame.midY)
+        let newOrigin = NSPoint(x: center.x - clamped / 2, y: center.y - clamped / 2)
         panel.setFrame(
-            NSRect(x: origin.x, y: origin.y, width: clamped, height: clamped),
+            NSRect(x: newOrigin.x, y: newOrigin.y, width: clamped, height: clamped),
             display: true,
             animate: true
         )
-        imageView?.frame = NSRect(x: 0, y: 0, width: clamped, height: clamped)
-        if let shape = currentShape(from: panel) {
-            applyShape(shape, size: clamped)
-        }
+        contentView?.frame = NSRect(x: 0, y: 0, width: clamped, height: clamped)
     }
 
-    private func applyShape(_ shape: WindowShape, size: Double) {
-        guard let layer = imageView?.layer else { return }
-        switch shape {
-        case .circle:
-            layer.cornerRadius = size / 2
-        case .roundedRectangle:
-            layer.cornerRadius = size * 0.15
-        }
-        layer.masksToBounds = true
+    public func updateOpacity(_ opacity: Double) {
+        panel?.alphaValue = min(max(opacity, 0.2), 1.0)
     }
 
-    private func currentShape(from panel: NSPanel) -> WindowShape? {
-        guard let layer = imageView?.layer else { return nil }
-        let size = panel.frame.width
-        if abs(layer.cornerRadius - size / 2) < 1 {
-            return .circle
-        }
-        return .roundedRectangle
+    public func updateTimerText(_ text: String) {
+        contentView?.timerText = text
     }
 
-    private func renderFrame(_ ciImage: CIImage) {
-        guard let imageView = imageView else { return }
-        let extent = ciImage.extent
-        guard let cgImage = ciContext.createCGImage(ciImage, from: extent) else { return }
-        imageView.image = NSImage(cgImage: cgImage, size: NSSize(width: extent.width, height: extent.height))
+    public func setFrozen(_ frozen: Bool) {
+        contentView?.isFrozen = frozen
+    }
+
+    private func subscribeTo(_ framePublisher: AnyPublisher<CIImage, Never>) {
+        framePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] ciImage in
+                self?.contentView?.updateFrame(ciImage)
+            }
+            .store(in: &cancellables)
     }
 }

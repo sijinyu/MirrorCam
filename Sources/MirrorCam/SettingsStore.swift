@@ -10,6 +10,10 @@ public protocol SettingsStoring {
     var brightness: Double { get set }
     var zoom: Double { get set }
     var launchAtLogin: Bool { get set }
+    var mirrorEffect: MirrorEffect { get set }
+    var colorFilter: ColorFilter { get set }
+    var opacity: Double { get set }
+    var timerDelay: TimerDelay { get set }
 }
 
 public final class SettingsStore: ObservableObject, SettingsStoring {
@@ -24,6 +28,10 @@ public final class SettingsStore: ObservableObject, SettingsStoring {
         static let brightness = "brightness"
         static let zoom = "zoom"
         static let launchAtLogin = "launchAtLogin"
+        static let mirrorEffect = "mirrorEffect"
+        static let colorFilter = "colorFilter"
+        static let opacity = "opacity"
+        static let timerDelay = "timerDelay"
     }
 
     @Published public var windowX: Double {
@@ -70,6 +78,26 @@ public final class SettingsStore: ObservableObject, SettingsStoring {
         didSet { defaults.set(launchAtLogin, forKey: Keys.launchAtLogin) }
     }
 
+    @Published public var mirrorEffect: MirrorEffect {
+        didSet { defaults.set(mirrorEffect.rawValue, forKey: Keys.mirrorEffect) }
+    }
+
+    @Published public var colorFilter: ColorFilter {
+        didSet { defaults.set(colorFilter.rawValue, forKey: Keys.colorFilter) }
+    }
+
+    @Published public var opacity: Double {
+        didSet {
+            let clamped = min(max(opacity, 0.2), 1.0)
+            if clamped != opacity { opacity = clamped; return }
+            defaults.set(opacity, forKey: Keys.opacity)
+        }
+    }
+
+    @Published public var timerDelay: TimerDelay {
+        didSet { defaults.set(timerDelay.rawValue, forKey: Keys.timerDelay) }
+    }
+
     public init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
 
@@ -85,6 +113,17 @@ public final class SettingsStore: ObservableObject, SettingsStoring {
 
         let shapeRaw = defaults.string(forKey: Keys.shape) ?? WindowShape.circle.rawValue
         self.shape = WindowShape(rawValue: shapeRaw) ?? .circle
+
+        let effectRaw = defaults.string(forKey: Keys.mirrorEffect) ?? MirrorEffect.flat.rawValue
+        self.mirrorEffect = MirrorEffect(rawValue: effectRaw) ?? .flat
+
+        let filterRaw = defaults.string(forKey: Keys.colorFilter) ?? ColorFilter.none.rawValue
+        self.colorFilter = ColorFilter(rawValue: filterRaw) ?? .none
+
+        self.opacity = defaults.object(forKey: Keys.opacity) as? Double ?? 1.0
+
+        let delayRaw = defaults.integer(forKey: Keys.timerDelay)
+        self.timerDelay = TimerDelay(rawValue: delayRaw) ?? .off
     }
 }
 
