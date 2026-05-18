@@ -97,34 +97,44 @@ Skipped. No issue tracker (GitHub not set up), all issues already specified.
 - **Differentiators**: Free + effects (convex/concave) + recording + self-timer
 - **Language**: Communicates in Korean, uses informal speech (반말)
 
+## Phase 6 — Distribution Prep (2026-05-18)
+
+### Changes Made
+1. **Package.swift**: swift-tools-version 5.6→5.9, macOS target .v12→.v13
+2. **ScreenRecorder.swift**: NSUserNotification → UNUserNotificationCenter (import UserNotifications, requestAuthorization, UNNotificationRequest)
+3. **MenuBarController.swift**: Launch-at-Login now uses SMAppService.mainApp.register()/unregister() (import ServiceManagement)
+4. **MirrorWindow.swift**: Fade-in (0→1, 0.2s) on show, fade-out (1→0, 0.2s) on hide with completion handler
+5. **Info.plist**: Bundle ID set to `com.sijin.MirrorCam`, LSMinimumSystemVersion 12.0→13.0
+6. **PrivacyInfo.xcprivacy**: New file — privacy manifest (no tracking, no collected data)
+7. **scripts/build-app.sh**: New file — builds release binary, creates .app bundle, ad-hoc signs, creates DMG
+8. **CLAUDE.md**: Updated to reflect all changes
+
+### Build & Test Verification
+- `swift build` — 0 warnings, 0 errors
+- `swift test` — 40 tests passed, 0 failures
+
 ## Git State (at session end)
 
-Branch: `master` (local only, no remote)
+Branch: `master` (tracks origin/master)
 ```
+2ceb90b feat: prepare app for distribution (macOS 13+, UserNotifications, SMAppService, fade animation)
+314a968 docs: add comprehensive CLAUDE.md and MEMORY.md
 4b0fbd1 docs: add CLAUDE.md and MEMORY.md for session context
 bab92b3 feat: add screenshot, recording, effects, and UI fixes
 c3af3a5 feat: initial MirrorCam implementation
 ```
 
-NOT pushed to GitHub — gh CLI install failed (Homebrew requires Xcode 15).
-
 ## Remaining Work
 
-### Immediate (after macOS/Xcode upgrade)
-1. Install gh CLI (`brew install gh`)
-2. `gh repo create MirrorCam --public --source=. --push`
-3. Or: create repo on github.com, then `git remote add origin <url> && git push -u origin master`
+### Immediate
+1. Design app icon (1024x1024) → convert to .icns → Resources/AppIcon.icns
+2. Run `scripts/build-app.sh` → generate MirrorCam.app + MirrorCam.dmg
+3. Create GitHub Release (tag v1.0.0, attach DMG)
 
-### App Store Submission Path
-1. Upgrade macOS to 14+ (Sonoma or Sequoia)
-2. Upgrade Xcode to 15+
-3. Create Xcode project (File → New → Project, or xcodegen)
-4. Set bundle ID (e.g., com.sijin.MirrorCam)
-5. Fix deprecated NSUserNotification (use UNUserNotificationCenter for macOS 14+)
-6. Design app icon 1024x1024
-7. App Store screenshots + metadata
-8. Enroll in Apple Developer Program ($99/yr)
-9. Archive → Organizer → Submit
+### Future (requires Apple Developer Program $99/yr)
+1. Notarize with Developer ID for Gatekeeper bypass
+2. Create Xcode project for Mac App Store submission
+3. App Store metadata (screenshots, description, keywords)
 
 ### Optional Enhancements (not requested)
 - Background replacement
@@ -135,11 +145,11 @@ NOT pushed to GitHub — gh CLI install failed (Homebrew requires Xcode 15).
 
 ## Technical Debt
 
-- `NSUserNotification` deprecated in macOS 14+ (ScreenRecorder.swift:141-145)
 - Video recording frame size = window size, not camera native resolution
 - No Xcode project — SPM only, needs .xcodeproj for App Store
 - Resources/Info.plist and MirrorCam.entitlements not linked in Package.swift (need Xcode project)
 - Error handling in ScreenRecorder is silent (no user feedback on failure)
+- No app icon yet
 
 ## Hook Constraints (from user's Claude config)
 
