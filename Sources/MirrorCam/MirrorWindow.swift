@@ -16,7 +16,12 @@ public final class MirrorWindow {
 
     public func show(settings: SettingsStore, framePublisher: AnyPublisher<CIImage, Never>) {
         if let panel = panel {
+            panel.alphaValue = 0
             panel.orderFront(nil)
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.2
+                panel.animator().alphaValue = 1.0
+            }
             isVisible = true
             subscribeTo(framePublisher)
             return
@@ -63,14 +68,30 @@ public final class MirrorWindow {
             }
             .store(in: &cancellables)
 
+        panel.alphaValue = 0
         panel.orderFront(nil)
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.2
+            panel.animator().alphaValue = 1.0
+        }
         isVisible = true
     }
 
     public func hide() {
-        panel?.orderOut(nil)
-        cancellables.removeAll()
-        isVisible = false
+        guard let panel = panel else {
+            cancellables.removeAll()
+            isVisible = false
+            return
+        }
+        NSAnimationContext.runAnimationGroup({ context in
+            context.duration = 0.2
+            panel.animator().alphaValue = 0
+        }, completionHandler: { [weak self] in
+            panel.orderOut(nil)
+            panel.alphaValue = 1.0
+            self?.cancellables.removeAll()
+            self?.isVisible = false
+        })
     }
 
     public func close() {

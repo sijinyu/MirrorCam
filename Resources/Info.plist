@@ -7,7 +7,7 @@
     <key>CFBundleExecutable</key>
     <string>MirrorCamApp</string>
     <key>CFBundleIdentifier</key>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <string>com.sijin.MirrorCam</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
@@ -19,7 +19,7 @@
     <key>CFBundleVersion</key>
     <string>1</string>
     <key>LSMinimumSystemVersion</key>
-    <string>12.0</string>
+    <string>13.0</string>
     <key>LSUIElement</key>
     <true/>
     <key>NSCameraUsageDescription</key>

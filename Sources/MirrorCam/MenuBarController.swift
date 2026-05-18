@@ -1,5 +1,6 @@
 import AppKit
 import Combine
+import ServiceManagement
 
 public final class MenuBarController {
     private var statusItem: NSStatusItem?
@@ -173,7 +174,20 @@ public final class MenuBarController {
     @objc private func setCircleShape() { settings.shape = .circle; rebuildMenu() }
     @objc private func setRectShape() { settings.shape = .roundedRectangle; rebuildMenu() }
     @objc private func toggleFlip() { settings.isMirrored.toggle(); rebuildMenu() }
-    @objc private func toggleLaunchAtLogin() { settings.launchAtLogin.toggle(); rebuildMenu() }
+    @objc private func toggleLaunchAtLogin() {
+        let newValue = !settings.launchAtLogin
+        do {
+            if newValue {
+                try SMAppService.mainApp.register()
+            } else {
+                try SMAppService.mainApp.unregister()
+            }
+            settings.launchAtLogin = newValue
+        } catch {
+            // Registration failed — keep setting unchanged
+        }
+        rebuildMenu()
+    }
     @objc private func quit() { onQuit?() }
 
     @objc private func setTimerDelay(_ sender: NSMenuItem) {

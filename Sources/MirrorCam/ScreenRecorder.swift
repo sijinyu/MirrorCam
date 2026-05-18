@@ -1,6 +1,7 @@
 import AppKit
 import AVFoundation
 import CoreImage
+import UserNotifications
 
 public final class ScreenRecorder {
     private var assetWriter: AVAssetWriter?
@@ -12,7 +13,13 @@ public final class ScreenRecorder {
     public private(set) var isRecording = false
     public var onRecordingStateChanged: ((Bool) -> Void)?
 
-    public init() {}
+    public init() {
+        requestNotificationPermission()
+    }
+
+    private func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
+    }
 
     // MARK: - Screenshot
 
@@ -138,10 +145,15 @@ public final class ScreenRecorder {
     }
 
     private func showSaveNotification(path: String) {
-        let notification = NSUserNotification()
-        notification.title = "MirrorCam"
-        notification.informativeText = "Screenshot saved to Desktop"
-        notification.soundName = nil
-        NSUserNotificationCenter.default.deliver(notification)
+        let content = UNMutableNotificationContent()
+        content.title = "MirrorCam"
+        content.body = "Screenshot saved to Desktop"
+
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: nil
+        )
+        UNUserNotificationCenter.current().add(request)
     }
 }

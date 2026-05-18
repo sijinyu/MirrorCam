@@ -16,7 +16,7 @@ swift test  # 40 tests, all passing
 
 ## Architecture
 
-Swift Package (swift-tools-version 5.6, macOS 12+)
+Swift Package (swift-tools-version 5.9, macOS 13+)
 
 | Module | File | Role |
 |--------|------|------|
@@ -30,8 +30,8 @@ Swift Package (swift-tools-version 5.6, macOS 12+)
 | MirrorWindow | MirrorWindow.swift | Floating NSPanel management, opacity, freeze, timer overlay |
 | MirrorContentView | MirrorContentView.swift | Custom NSView: shape clipping, drag, scroll resize, timer overlay, aspect-fill rendering |
 | HotkeyManager | HotkeyManager.swift | Global keyboard shortcut (⌥⌘G) via NSEvent.addGlobalMonitorForEvents |
-| MenuBarController | MenuBarController.swift | NSStatusItem + dropdown menu with all settings |
-| ScreenRecorder | ScreenRecorder.swift | Screenshot (PNG) + video recording (MP4) via AVAssetWriter |
+| MenuBarController | MenuBarController.swift | NSStatusItem + dropdown menu with all settings + SMAppService launch-at-login |
+| ScreenRecorder | ScreenRecorder.swift | Screenshot (PNG) + video recording (MP4) via AVAssetWriter + UNUserNotificationCenter |
 | CountdownTimer | CountdownTimer.swift | Self-timer countdown before capture + TimerDelay enum |
 | MirrorCamApp | MirrorCamApp.swift | AppDelegate wiring all modules |
 
@@ -51,8 +51,9 @@ MirrorCam/
 ├── README.md (contains original PRD)
 ├── .gitignore
 ├── Resources/
-│   ├── Info.plist (LSUIElement=true, NSCameraUsageDescription)
-│   └── MirrorCam.entitlements (Sandbox + camera)
+│   ├── Info.plist (LSUIElement=true, NSCameraUsageDescription, Bundle ID)
+│   ├── MirrorCam.entitlements (Sandbox + camera)
+│   └── PrivacyInfo.xcprivacy (Privacy manifest)
 ├── Sources/
 │   ├── MirrorCam/
 │   │   ├── AVCaptureSessionWrapper.swift
@@ -76,6 +77,8 @@ MirrorCam/
 │       ├── CameraManagerTests.swift (12 tests)
 │       ├── ImageProcessorTests.swift (12 tests)
 │       └── SettingsStoreTests.swift (16 tests)
+├── scripts/
+│   └── build-app.sh (builds .app bundle + DMG)
 └── issues/ (10 vertical slice specs, reference only)
 ```
 
@@ -119,29 +122,28 @@ MirrorCam/
 
 ## Distribution
 
-- Target: Mac App Store (free, portfolio piece)
+- Bundle ID: com.sijin.MirrorCam
 - Sandbox: enabled (Resources/MirrorCam.entitlements)
 - Camera entitlement: com.apple.security.device.camera
 - LSUIElement: true (menu bar only, no Dock icon)
-- Bundle ID template: $(PRODUCT_BUNDLE_IDENTIFIER) — set when creating Xcode project
-- Requires Xcode 15+ to build for App Store submission
+- Privacy manifest: Resources/PrivacyInfo.xcprivacy
+- Build script: `scripts/build-app.sh` (creates .app bundle + DMG)
+- Current: GitHub Releases (unsigned, free)
+- Future: Notarized or Mac App Store ($99/yr Apple Developer Program)
 
-## Environment (at time of development)
+## Build .app Bundle
 
-- macOS 13.4 (Ventura)
-- Xcode 13.4.1 (Swift 5.6)
-- Swift Package Manager (no Xcode project yet)
-- gh CLI: not installed (Homebrew blocked by Xcode version)
+```bash
+scripts/build-app.sh
+# Output: .build-app/MirrorCam.app and .build-app/MirrorCam.dmg
+```
 
 ## What's Next
 
-1. Upgrade macOS to 14+ (Sonoma) and Xcode to 15+
-2. Install gh CLI and push to GitHub
-3. Create Xcode project for App Store submission
-4. Design app icon (1024x1024)
-5. App Store metadata (screenshots, description, keywords)
-6. Apple Developer Program enrollment ($99/yr)
-7. Archive + submit via Xcode
+1. Design app icon (1024x1024) → Resources/AppIcon.icns
+2. Create GitHub Release with v1.0.0 tag + DMG
+3. Apple Developer Program enrollment ($99/yr) for notarization/App Store
+4. Create Xcode project for App Store submission
 
 ## Test DI Pattern
 
@@ -153,6 +155,7 @@ Tests use mock implementations of protocols:
 ## Known Limitations
 
 - No Xcode project — SPM only, App Store requires `.xcodeproj` or `.xcworkspace`
-- Screenshot notification uses deprecated `NSUserNotification` (works on macOS 12-13, removed in 14+)
+- No app icon yet (needs 1024x1024 design → .icns conversion)
 - No mic support (user explicitly passed)
 - Video recording uses window size as frame size (not camera native resolution)
+- GitHub Release is unsigned — users must right-click → Open on first launch
