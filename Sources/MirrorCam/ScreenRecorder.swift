@@ -17,7 +17,12 @@ public final class ScreenRecorder {
         requestNotificationPermission()
     }
 
+    private var hasBundleIdentifier: Bool {
+        Bundle.main.bundleIdentifier != nil
+    }
+
     private func requestNotificationPermission() {
+        guard hasBundleIdentifier else { return }
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
     }
 
@@ -145,6 +150,8 @@ public final class ScreenRecorder {
     }
 
     private func showSaveNotification(path: String) {
+        guard hasBundleIdentifier else { return }
+
         let content = UNMutableNotificationContent()
         content.title = "MirrorCam"
         content.body = "Screenshot saved to Desktop"
