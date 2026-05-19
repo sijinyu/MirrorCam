@@ -128,7 +128,8 @@ MirrorCam/
 - LSUIElement: true (menu bar only, no Dock icon)
 - Privacy manifest: Resources/PrivacyInfo.xcprivacy
 - Build script: `scripts/build-app.sh` (creates .app bundle + DMG)
-- Current: GitHub Releases (unsigned, free)
+- App icon: Resources/AppIcon.icns (SF Symbol placeholder, generated via scripts/generate-icon.swift)
+- Current: GitHub Releases v1.0.0 (unsigned, free) — https://github.com/sijinyu/MirrorCam/releases/tag/v1.0.0
 - Future: Notarized or Mac App Store ($99/yr Apple Developer Program)
 
 ## Build .app Bundle
@@ -140,10 +141,9 @@ scripts/build-app.sh
 
 ## What's Next
 
-1. Design app icon (1024x1024) → Resources/AppIcon.icns
-2. Create GitHub Release with v1.0.0 tag + DMG
-3. Apple Developer Program enrollment ($99/yr) for notarization/App Store
-4. Create Xcode project for App Store submission
+1. Apple Developer Program enrollment ($99/yr) for notarization/App Store
+2. Create Xcode project for App Store submission
+3. (Optional) Professional app icon to replace SF Symbol placeholder
 
 ## Test DI Pattern
 
@@ -155,7 +155,7 @@ Tests use mock implementations of protocols:
 ## Known Limitations
 
 - No Xcode project — SPM only, App Store requires `.xcodeproj` or `.xcworkspace`
-- No app icon yet (needs 1024x1024 design → .icns conversion)
 - No mic support (user explicitly passed)
 - Video recording uses window size as frame size (not camera native resolution)
 - GitHub Release is unsigned — users must right-click → Open on first launch
+- UNUserNotificationCenter requires bundle ID — notifications skip in SPM debug builds

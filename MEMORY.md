@@ -113,10 +113,25 @@ Skipped. No issue tracker (GitHub not set up), all issues already specified.
 - `swift build` — 0 warnings, 0 errors
 - `swift test` — 40 tests passed, 0 failures
 
+### Bug Fix
+- **ScreenRecorder.swift**: UNUserNotificationCenter.current() crashes without bundle ID (SPM debug binary). Added `hasBundleIdentifier` guard to skip notification calls when `Bundle.main.bundleIdentifier == nil`.
+
+### App Icon
+- **scripts/generate-icon.swift**: SF Symbol `camera.fill` on dark purple gradient circle
+- **Resources/AppIcon.icns**: 1.4MB, all sizes 16~1024px
+- **Info.plist**: Added `CFBundleIconFile = AppIcon`
+
+### Build & Release (2026-05-19)
+- `scripts/build-app.sh` → .app (ad-hoc signed) + DMG (1.9MB)
+- GitHub Release v1.0.0: https://github.com/sijinyu/MirrorCam/releases/tag/v1.0.0
+
 ## Git State (at session end)
 
-Branch: `master` (tracks origin/master)
+Branch: `master` (synced with origin/master)
 ```
+968befc feat: add temporary app icon (SF Symbol camera on purple gradient)
+87a49aa fix: guard UNUserNotificationCenter calls for missing bundle identifier
+b3bca63 docs: update MEMORY.md with distribution prep session details
 2ceb90b feat: prepare app for distribution (macOS 13+, UserNotifications, SMAppService, fade animation)
 314a968 docs: add comprehensive CLAUDE.md and MEMORY.md
 4b0fbd1 docs: add CLAUDE.md and MEMORY.md for session context
@@ -124,12 +139,9 @@ bab92b3 feat: add screenshot, recording, effects, and UI fixes
 c3af3a5 feat: initial MirrorCam implementation
 ```
 
-## Remaining Work
+GitHub Release: v1.0.0 published with MirrorCam.dmg
 
-### Immediate
-1. Design app icon (1024x1024) → convert to .icns → Resources/AppIcon.icns
-2. Run `scripts/build-app.sh` → generate MirrorCam.app + MirrorCam.dmg
-3. Create GitHub Release (tag v1.0.0, attach DMG)
+## Remaining Work
 
 ### Future (requires Apple Developer Program $99/yr)
 1. Notarize with Developer ID for Gatekeeper bypass
@@ -142,6 +154,7 @@ c3af3a5 feat: initial MirrorCam implementation
 - Multiple camera support
 - Custom hotkey configuration UI
 - Window border/shadow customization
+- Professional app icon (replace SF Symbol placeholder)
 
 ## Technical Debt
 
@@ -149,7 +162,6 @@ c3af3a5 feat: initial MirrorCam implementation
 - No Xcode project — SPM only, needs .xcodeproj for App Store
 - Resources/Info.plist and MirrorCam.entitlements not linked in Package.swift (need Xcode project)
 - Error handling in ScreenRecorder is silent (no user feedback on failure)
-- No app icon yet
 
 ## Hook Constraints (from user's Claude config)
 
